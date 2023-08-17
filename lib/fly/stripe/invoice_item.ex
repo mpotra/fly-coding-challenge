@@ -5,6 +5,10 @@ defmodule Fly.Stripe.InvoiceItem do
 
   use Fly.Stripe.Helpers
 
+  @callback create(params :: map()) :: map()
+  @callback retrieve(id :: binary(), params :: map()) :: map()
+  @callback update(item :: map(), params :: map()) :: map()
+
   defstruct [:id, :invoice, unit_amount_decimal: 0.0, quantity: 0]
 
   @doc """

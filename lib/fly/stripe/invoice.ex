@@ -5,6 +5,10 @@ defmodule Fly.Stripe.Invoice do
 
   use Fly.Stripe.Helpers
 
+  @callback create(params :: map()) :: map()
+  @callback retrieve(id :: binary(), params :: map()) :: map()
+  @callback update(item :: map(), params :: map()) :: map()
+
   # https://stripe.com/docs/api/invoices
   defstruct [:id, :customer, :total]
 
