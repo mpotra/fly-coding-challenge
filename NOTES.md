@@ -18,3 +18,10 @@ The proposed solution builds around the following strategy:
 5. At the end of a billing cycle (incoming Event from Stripe) - before an invoice is to be finalized, a final Sync occurs. These events require monitoring and queueing, possibly via Broadway implementation.
 6. Once an Invoice is finalized, a new "draft" invoice is created and run as the "current invoice".
 7. Depending on use-cases, strategies to do Syncs outside the cron job window can be deployed for on-demand updates.
+
+### Webhooks
+
+Webhooks are set up via the following routes:
+
+- `GET` [http://localhost:4000/webhook/invoice/finalized](http://localhost:4000/webhook/invoice/finalized?id=) - Handles `invoice.finalized` events. Each time an invoice
+is finalized, a new "current invoice" is created by the handler.
