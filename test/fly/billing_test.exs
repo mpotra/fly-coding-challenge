@@ -83,7 +83,6 @@ defmodule Fly.BillingTest do
       assert nil == Billing.get_current_invoice(org)
 
       assert %Invoice{id: invoice_id} = invoice_fixture(org)
-      IO.inspect(invoice_id)
       assert %Invoice{id: ^invoice_id} = Billing.get_current_invoice(org)
 
       assert %Invoice{id: invoice_id2} = invoice_fixture(org)
