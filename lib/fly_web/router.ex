@@ -19,6 +19,8 @@ defmodule FlyWeb.Router do
 
     get "/", PageController, :home
 
+    get "/sync", SyncController, :update_invoice
+
     scope "/webhook" do
       scope "/invoice" do
         get "/finalized", WebhookController, :invoice_finalized
