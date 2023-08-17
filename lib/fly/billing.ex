@@ -126,4 +126,36 @@ defmodule Fly.Billing do
     InvoiceItem.invoice_changeset(invoice, %InvoiceItem{}, attrs)
     |> Repo.insert()
   end
+
+  @doc """
+  Returns the current (draft) invoice from the database.
+
+  This needs improvement, because currently the assumption is that simply
+  the latest invoice is the current one, but we'll need a status `field` and check
+  for current interval match to support multiple invoice case-scenarios.
+
+  ## Examples
+
+      iex> get_current_invoice(%Oganization{id: 1})
+      %Invoice{}
+
+  """
+  def get_current_invoice(org, opts \\ [])
+
+  def get_current_invoice(%Organization{id: org_id}, opts) do
+    get_current_invoice(org_id, opts)
+  end
+
+  def get_current_invoice(org_id, opts) do
+    preload = Keyword.get(opts, :preload, [:invoice_items])
+
+    from(inv in Invoice)
+    |> join(:left, [inv], org in assoc(inv, :organization))
+    # This is annoying, ordering by database record ID, but needed in absence of utc_datetime_usec field.
+    |> order_by([inv, org], desc: inv.inserted_at, desc: inv.id)
+    |> where([inv, org], org.id == ^org_id)
+    |> limit(1)
+    |> preload(^preload)
+    |> Repo.one()
+  end
 end
