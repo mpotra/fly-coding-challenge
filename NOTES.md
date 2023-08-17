@@ -27,3 +27,27 @@ Webhooks are set up via the following routes:
 is finalized, a new "current invoice" is created by the handler.
 - `GET` [http://localhost:4000/sync](http://localhost:4000/sync?invoice=) - On-demand trigger for `Sync.update_invoice` given an invoice ID.
 
+
+### Limitations
+
+- The scheduled Oban job to run `Sync.update_invoice/2` at regular intervals is not included
+- Invoice update in `Sync` does not validate that a Stripe invoice has been created. It should check for this state, and if the invoice has not been created on Stripe end, but exists in the database, create it at Stripe too first.
+- Invoice update in `Sync` does not validate against existing Stripe InvoiceItems. It should do so, and only compile
+a list of changes for create/update/remove. Currently it only calls `Stripe.InvoiceItem.create/1`
+
+## Final thoughts
+
+The work put into this task is mostly for proof of concept, and not all relevant logic is in place (i.e. the scheduled job).
+
+Also, the scope of implementing a complete billing system is much larger than what is presented in this repository,
+and many models, routes and structure will change substantially, as redundancy and fault tolerance is implemented.
+Moreover, business needs and logic also dictates the actual implementation and what and when gets built.
+
+Overall, as stated in the Case Study document, the fundamental principles towards Customers is to minimize need of input from their behalf, be prompt and clear in the information supplied upon their request (either via UI tools or Support) and moreover, have the necessary features in place to make it transparent and allow them to control their billing subscriptions etc. by providing reliable tools;
+
+When it comes to reliability, any solution should at least initially consider how much could be leveraged from 
+already existing solutions (tested, reliable, common) for Customers - i.e. customer facing features provided by Stripe.
+
+Thanks for reading and checking this out!
+
+I hope we'll get to talk more about this topic
