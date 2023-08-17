@@ -41,4 +41,48 @@ defmodule Fly.Sync do
       end
     end)
   end
+
+  @doc """
+  Updates an invoice, by calling Stripe.InvoiceItem API
+  and any additional invoice updates needed.
+  """
+  def update_invoice(%Billing.Invoice{} = invoice) do
+    # TODO: Check with Stripe if the invoice already exists.
+    # if not, then make sure to create it in Stripe as well first
+    # and then continue with the bellow logic.
+
+    update_invoice_items(invoice)
+  end
+
+  def update_invoice(invoice_id) do
+    case Billing.get_invoice(invoice_id, preload: [:invoice_items]) do
+      {:ok, invoice} -> update_invoice(invoice)
+      error -> error
+    end
+  end
+
+  @doc """
+  This is a dummy function that should check with Stripe for existing items,
+  determine which ones need to be updated, removed or added, and use
+  the appropriate API call for each item.
+
+  For the time being this just calls create for all.
+  Does not manage errors.
+
+  This can be an async call (via Oban jobs) so that individual failing
+  calls can be retried.
+  """
+  def update_invoice_items(
+        %Billing.Invoice{stripe_id: stripe_invoice_id, invoice_items: invoice_items} = invoice
+      ) do
+    Enum.each(invoice_items, fn invoice_item ->
+      Fly.Stripe.api_module(:invoice_item).create(%{
+        invoice: stripe_invoice_id,
+        unit_amount_decimal: invoice_item.amount,
+        quantity: 1
+      })
+    end)
+
+    {:ok, invoice}
+  end
 end
