@@ -36,3 +36,6 @@ config :phoenix, :plug_init_mode, :runtime
 config :fly, Fly.Stripe,
   invoice: Fly.Stripe.InvoiceMock,
   invoice_item: Fly.Stripe.InvoiceItemMock
+
+# Config Oban jobs
+config :fly, Oban, testing: :inline

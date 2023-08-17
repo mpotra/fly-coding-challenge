@@ -64,6 +64,12 @@ config :fly, Fly.Stripe,
   invoice: Fly.Stripe.Invoice,
   invoice_item: Fly.Stripe.InvoiceItem
 
+# Config Oban jobs
+config :fly, Oban,
+  repo: Fly.Repo,
+  plugins: [Oban.Plugins.Pruner],
+  queues: [default: 10, stripe: 15, billing: 10, sync: 10]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
