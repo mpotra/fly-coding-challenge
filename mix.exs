@@ -52,7 +52,11 @@ defmodule Fly.MixProject do
       {:plug_cowboy, "~> 2.5"},
 
       # Development Mocks
-      {:mox, "~> 1.0", only: :test}
+      {:mox, "~> 1.0", only: :test},
+
+      # Event queue/jobs management
+      {:broadway, "~> 1.0"},
+      {:oban, "~> 2.15"}
     ]
   end
 
