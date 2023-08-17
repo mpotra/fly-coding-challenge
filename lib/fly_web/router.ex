@@ -18,6 +18,12 @@ defmodule FlyWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    scope "/webhook" do
+      scope "/invoice" do
+        get "/finalized", WebhookController, :invoice_finalized
+      end
+    end
   end
 
   # Other scopes may use custom stacks.
