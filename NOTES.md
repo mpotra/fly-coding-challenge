@@ -25,3 +25,5 @@ Webhooks are set up via the following routes:
 
 - `GET` [http://localhost:4000/webhook/invoice/finalized](http://localhost:4000/webhook/invoice/finalized?id=) - Handles `invoice.finalized` events. Each time an invoice
 is finalized, a new "current invoice" is created by the handler.
+- `GET` [http://localhost:4000/sync](http://localhost:4000/sync?invoice=) - On-demand trigger for `Sync.update_invoice` given an invoice ID.
+
