@@ -15,7 +15,7 @@ defmodule Fly.Billing.InvoiceItem do
 
   schema "invoice_items" do
     field :description, :string
-    field :amount, :integer
+    field :amount, :decimal
 
     belongs_to :invoice, Fly.Billing.Invoice
 
