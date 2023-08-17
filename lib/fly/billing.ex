@@ -55,6 +55,29 @@ defmodule Fly.Billing do
   end
 
   @doc """
+  Gets a single invoice.
+
+  ## Examples
+
+      iex> get_invoice!(123)
+      {:ok, %Invoice{}}
+
+      iex> get_invoice!(456)
+      {:error, %Ecto.NoResultsError{}}
+
+  """
+  def get_invoice(id, opts \\ []) do
+    preload = Keyword.get(opts, :preload, [])
+
+    from(i in Invoice, preload: ^preload)
+    |> Repo.get(id)
+    |> case do
+      nil -> {:error, %Ecto.NoResultsError{message: "Not found"}}
+      invoice -> {:ok, invoice}
+    end
+  end
+
+  @doc """
   Gets a single invoice by stripe invoice ID
 
   ## Examples
