@@ -31,7 +31,11 @@ defmodule Fly.BillingTest do
     end
 
     test "create_invoice/1 with valid data creates a invoice", %{org: org} do
-      valid_attrs = %{due_date: ~D[2023-07-22], invoiced_at: ~U[2023-07-22 12:39:00Z], stripe_id: "some stripe_id"}
+      valid_attrs = %{
+        due_date: ~D[2023-07-22],
+        invoiced_at: ~U[2023-07-22 12:39:00Z],
+        stripe_id: "some stripe_id"
+      }
 
       assert {:ok, %Invoice{} = invoice} = Billing.create_invoice(org, valid_attrs)
       assert invoice.due_date == ~D[2023-07-22]
@@ -45,7 +49,12 @@ defmodule Fly.BillingTest do
 
     test "update_invoice/2 with valid data updates the invoice", %{org: org} do
       invoice = invoice_fixture(org)
-      update_attrs = %{due_date: ~D[2023-07-23], invoiced_at: ~U[2023-07-23 12:39:00Z], stripe_id: "some updated stripe_id"}
+
+      update_attrs = %{
+        due_date: ~D[2023-07-23],
+        invoiced_at: ~U[2023-07-23 12:39:00Z],
+        stripe_id: "some updated stripe_id"
+      }
 
       assert {:ok, %Invoice{} = invoice} = Billing.update_invoice(invoice, update_attrs)
       assert invoice.due_date == ~D[2023-07-23]
@@ -68,6 +77,17 @@ defmodule Fly.BillingTest do
     test "change_invoice/1 returns a invoice changeset", %{org: org} do
       invoice = invoice_fixture(org)
       assert %Ecto.Changeset{} = Billing.change_invoice(invoice)
+    end
+
+    test "get_current_invoice/2 returns an invoice for org", %{org: org} do
+      assert nil == Billing.get_current_invoice(org)
+
+      assert %Invoice{id: invoice_id} = invoice_fixture(org)
+      IO.inspect(invoice_id)
+      assert %Invoice{id: ^invoice_id} = Billing.get_current_invoice(org)
+
+      assert %Invoice{id: invoice_id2} = invoice_fixture(org)
+      assert %Invoice{id: ^invoice_id2} = Billing.get_current_invoice(org)
     end
   end
 end
