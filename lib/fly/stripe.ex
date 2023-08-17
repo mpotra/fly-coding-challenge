@@ -128,4 +128,37 @@ defmodule Fly.Stripe do
       _e -> raise error.__struct__, message: error.message
     end
   end
+
+  @spec create_invoice(customer_id :: String.t()) :: {:error, Error.t()} | {:ok, Invoice.t()}
+  def create_invoice(customer_id) when is_binary(customer_id) do
+    api_module(:invoice).create(%{customer: customer_id, total: 0})
+  end
+
+  @spec create_invoice_item(params :: map()) :: {:error, Error.t()} | {:ok, InvoiceItem.t()}
+  def create_invoice_item(params \\ %{}) do
+    api_module(:invoice_item).create(params)
+  end
+
+  @doc """
+  Retrieve the API module to use for a given endpoint
+
+  ## Examples
+
+  iex> Fly.Stripe.api_module(:invoice)
+  Fly.Stripe.InvoiceMock
+
+  iex> Fly.Stripe.api_module(:invoice_item)
+  Fly.Stripe.InvoiceItemMock
+  """
+  def api_module(:invoice), do: get_endpoint_module(:invoice, Fly.Stripe.Invoice)
+  def api_module(:invoice_item), do: get_endpoint_module(:invoice_item, Fly.Stripe.InvoiceItem)
+
+  defp get_endpoint_module(module, default_module) do
+    Keyword.get(get_endpoint_config(), module, default_module)
+  end
+
+  # Retrieve the modules configured for Stripe api, based on environment
+  defp get_endpoint_config() do
+    Application.get_env(:fly, Fly.Stripe)
+  end
 end
