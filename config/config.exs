@@ -59,6 +59,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Use explicit contracts for API modules
+config :fly, Fly.Stripe,
+  invoice: Fly.Stripe.Invoice,
+  invoice_item: Fly.Stripe.InvoiceItem
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

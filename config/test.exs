@@ -31,3 +31,8 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Use explicit contracts for API modules
+config :fly, Fly.Stripe,
+  invoice: Fly.Stripe.InvoiceMock,
+  invoice_item: Fly.Stripe.InvoiceItemMock
